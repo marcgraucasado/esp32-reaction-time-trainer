@@ -1,6 +1,6 @@
 # Sistema de Entrenamiento de Respuesta a Estímulos (ESP32‑S3)
 
-> **Autores:** Marc Grau Casado
+> **Autor:** Marc Grau Casado
 
 > **Asignatura:** Procesadores Digitales (curso 2025‑2026)
 
