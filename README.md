@@ -180,19 +180,19 @@ The HTTP server is implemented using **ESPAsyncWebServer**, while ranking data i
 ## Repository Structure
 
 ```text
-├── Codi/
+├── firmware/
 │   ├── include/
 │   ├── lib/
 │   ├── src/
 │   │   └── main.cpp
 │   ├── test/
 │   └── platformio.ini
-├── Memòria.pdf
+├── Project_Report.pdf
 ├── README.md
 └── README_ES.md
 ```
 
-The firmware is located in `Codi/src/main.cpp`, while `platformio.ini` contains the ESP32-S3 environment and project dependencies.
+The firmware is located in `firmware/src/main.cpp`, while `platformio.ini` contains the ESP32-S3 environment and project dependencies.
 
 ---
 
@@ -202,7 +202,7 @@ The firmware is located in `Codi/src/main.cpp`, while `platformio.ini` contains 
 
 ```bash
 git clone https://github.com/marcgraucasado/esp32-reaction-time-trainer.git
-cd esp32-reaction-time-trainer/Codi
+cd esp32-reaction-time-trainer/firmware
 ```
 
 ### Build
