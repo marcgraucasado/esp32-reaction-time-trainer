@@ -3,6 +3,7 @@
 # Reaction Time Training System — ESP32-S3
 
 > **Author:** Marc Grau Casado
+
 > **Course:** Digital Processors — 2025/2026
 
 ## Project Overview
