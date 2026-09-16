@@ -169,13 +169,16 @@ This functionality is implemented using **ESPAsyncWebServer**.
 ## Repository Structure
 
 ```text
-├── src/             # Main source code
-├── lib/             # Custom libraries
-├── data/            # LittleFS files, ranking data and web resources
-├── docs/            # Documentation, diagrams and project images
-├── platformio.ini   # PlatformIO configuration
-├── README.md        # English documentation
-└── README_ES.md     # Spanish documentation
+├── Codi/
+│   ├── include/
+│   ├── lib/
+│   ├── src/
+│   │   └── main.cpp
+│   ├── test/
+│   └── platformio.ini
+├── Memòria.pdf
+├── README.md
+└── README_ES.md
 ```
 
 ---
