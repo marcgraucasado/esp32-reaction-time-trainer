@@ -1,36 +1,36 @@
-[🇬🇧 English](README.md) | [🇪🇸 Español](README_ES.md)
+🇬🇧 English | [🇪🇸 Español](README_ES.md)
 
-# Reaction Time Training System — ESP32-S3
+# ESP32-S3 Reaction Time Trainer
 
-> **Author:** Marc Grau Casado
-
-> **Course:** Digital Processors — 2025/2026
+> **Author:** Marc Grau Casado  
+> **Course:** Digital Processors — 2025/2026  
+> **Degree:** Audiovisual Systems Engineering — Universitat Politècnica de Catalunya (UPC)
 
 ## Project Overview
 
-This project is an interactive **reaction time training system based on the ESP32-S3**, designed to measure and improve user response time through visual, auditory and physical stimuli.
+This project is an interactive **reaction time training system built around the ESP32-S3**.
 
-The system combines an **8×8 LED matrix**, buzzers, push buttons and IR sensors to generate different types of stimuli. User responses are processed in real time by the ESP32-S3, while an **OLED display** provides menus, game information and results.
+The system generates random visual targets and measures how quickly the user reacts through infrared sensors. Reaction times are processed in real time and used to calculate a score according to the selected difficulty level.
 
-The device also creates its own **Wi-Fi Access Point** and hosts a local web interface where users can check statistics and a persistent ranking of the best scores.
+An **OLED display** provides the user interface and game results, while the ESP32-S3 creates its own **Wi-Fi Access Point** and hosts a local web server where the best scores can be viewed.
 
-The project combines **embedded systems, electronics, real-time processing, Wi-Fi communication and web development** in a single hardware/software platform.
+The project integrates **embedded programming, electronics, sensor interfacing, real-time timing, persistent storage and Wi-Fi communication** in a single hardware/software system.
 
 ---
 
 ## Key Features
 
-* Three difficulty levels: **Easy, Medium and Hard**.
-* Random visual and auditory stimuli.
-* Real-time reaction time measurement.
-* Automatic score calculation.
-* OLED-based menu and results interface.
-* Persistent ranking using **LittleFS**.
-* Local web interface for statistics and rankings.
-* Wi-Fi communication using the ESP32-S3 in **Access Point mode**.
-* Support for multiple players.
-* Automatic game restart and shutdown logic.
-* Penalty system based on incorrect responses.
+- Three difficulty levels: **Easy, Medium and Hard**
+- Four independent LED / IR sensor targets
+- Random target generation
+- Reaction-time measurement in milliseconds
+- Automatic score calculation
+- Error detection and score penalties
+- OLED-based user interface
+- Persistent top-score ranking using **LittleFS**
+- Local Wi-Fi Access Point
+- Embedded HTTP server using **ESPAsyncWebServer**
+- Restart and difficulty-selection logic after each session
 
 ---
 
@@ -38,131 +38,142 @@ The project combines **embedded systems, electronics, real-time processing, Wi-F
 
 ### Hardware
 
-* ESP32-S3
-* 8×8 LED matrix
-* OLED 128×64 display
-* IR sensors
-* Push buttons
-* Buzzers
-* Custom electronic assembly
+- ESP32-S3
+- Four LED targets
+- Four IR sensors
+- 128×64 OLED display
+- Buzzer
+- Three difficulty-selection push buttons
+- Electronic prototyping and custom assembly
 
 ### Software
 
-* C++
-* PlatformIO
-* ESPAsyncWebServer
-* LittleFS
-* HTML / CSS
-* Wi-Fi Access Point
-* Embedded real-time processing
+- C++
+- Arduino framework
+- PlatformIO
+- ESPAsyncWebServer
+- LittleFS
+- Adafruit GFX
+- Adafruit SSD1306
+- HTML / CSS
+- ESP32 Wi-Fi Access Point mode
 
 ---
 
 ## System Architecture
 
 ```text
-┌──────────┐       ┌─────────────────┐       ┌──────────────┐
-│ 8×8 LED  │       │    ESP32-S3     │       │ OLED Display │
-│  Matrix  │◀─────▶│   CPU + Wi-Fi   │──────▶│    128×64    │
-└──────────┘       └─────────────────┘       └──────────────┘
-      ▲                     ▲
-      │                     │
-┌──────────┐          ┌──────────────┐
-│ Buzzers  │          │ Push Buttons │
-└──────────┘          │ / IR Sensors │
-                      └──────────────┘
-                              │
-                              ▼
-                     ┌────────────────┐
-                     │ Local Web      │
-                     │ Interface      │
-                     └────────────────┘
+                         ┌─────────────────────┐
+                         │      ESP32-S3       │
+                         │                     │
+                         │  Game logic         │
+                         │  Timing             │
+                         │  Score calculation  │
+                         │  Wi-Fi / Web server │
+                         │  LittleFS storage   │
+                         └───┬─────┬─────┬─────┘
+                             │     │     │
+                 ┌───────────┘     │     └────────────┐
+                 ▼                 ▼                  ▼
+        ┌────────────────┐  ┌─────────────┐   ┌──────────────┐
+        │ LED Targets +  │  │ OLED 128×64 │   │ Wi-Fi Client│
+        │   IR Sensors   │  │   Display   │   │ Web Browser │
+        └────────────────┘  └─────────────┘   └──────────────┘
+                 ▲
+                 │
+        ┌────────────────┐
+        │ User Response  │
+        └────────────────┘
+
+              Push Buttons ──────► Difficulty Selection
+              Buzzer       ──────► Audio Feedback
 ```
 
-The **ESP32-S3** acts as the central controller of the system. It manages stimulus generation, user input, reaction time measurement, score calculation, data storage and the local web server.
+The **ESP32-S3** is the central controller. It manages the game state, target selection, sensor inputs, reaction-time measurement, scoring, OLED interface, persistent ranking and local web server.
 
 ---
 
 ## How It Works
 
-### 1. System Start
+### 1. Difficulty Selection
 
-The ESP32-S3 initializes the display, sensors, LED matrix, storage system and Wi-Fi interface.
+The user selects one of three difficulty levels using dedicated push buttons:
 
-### 2. Game Configuration
+- **Easy**
+- **Medium**
+- **Hard**
 
-The user selects the desired game mode and difficulty level through the OLED interface using the physical controls.
+Each difficulty level uses different reaction-time thresholds for score calculation.
 
-### 3. Countdown
+### 2. Countdown
 
-Before the game starts, a **5-second countdown** is displayed.
+A countdown is displayed on the OLED before the session starts, accompanied by audio feedback from the buzzer.
 
-### 4. Stimulus Generation
+### 3. Random Target Generation
 
-The system generates random visual and auditory stimuli using the LED matrix and buzzers.
+The ESP32-S3 randomly selects one of the four available targets and activates its corresponding LED.
 
-### 5. Reaction Measurement
+### 4. Reaction Detection
 
-The ESP32-S3 measures the time between the stimulus and the user's response through the push buttons or IR sensors.
+The system continuously monitors the four IR sensors.
 
-Incorrect responses are also detected.
+When the user activates the sensor corresponding to the illuminated target, the ESP32-S3 calculates:
 
-For every three mistakes, one point is deducted from the maximum final score.
+```text
+Reaction time = Sensor activation time - LED activation time
+```
+
+The measured reaction time is stored for the current session.
+
+Activating an incorrect sensor is registered as an error.
+
+### 5. Score Calculation
+
+At the end of the timed session, the system calculates the average reaction time.
+
+A base score is assigned according to the selected difficulty and the measured average reaction time.
+
+For every three incorrect responses, one point is deducted from the final score.
 
 ### 6. Results
 
-At the end of the game, the final score is displayed for approximately **15 seconds**.
+The final score is displayed on the OLED.
 
-The user can then choose to start another game and select a new game mode.
+The user can then select another difficulty level and start a new session.
 
-If no new game is selected within the defined period, the system automatically shuts down the game session.
+### 7. Persistent Ranking
 
-### 7. Ranking
-
-The three best scores and their associated reaction times are stored and displayed through the local web interface.
+The best three scores for each difficulty level are stored in **LittleFS**, allowing the ranking to remain available after a restart.
 
 ---
 
-## Main Components
+## Difficulty Thresholds
 
-| Component          | Function                                                                |
-| ------------------ | ----------------------------------------------------------------------- |
-| **ESP32-S3**       | Main processor, Wi-Fi Access Point, game logic, timing and data storage |
-| **8×8 LED Matrix** | Visual stimulus generation                                              |
-| **Buzzers**        | Auditory stimulus generation                                            |
-| **Push Buttons**   | User interaction and menu control                                       |
-| **IR Sensors**     | Contactless user response detection                                     |
-| **OLED 128×64**    | Menus, game information and results                                     |
-| **LittleFS**       | Persistent ranking storage                                              |
-| **Web Server**     | Remote access to statistics and rankings                                |
+The scoring thresholds implemented in the firmware are:
 
----
+| Difficulty | Score 10 | Score 8 | Score 6 | Otherwise |
+|---|---:|---:|---:|---:|
+| **Easy** | < 500 ms | < 600 ms | < 700 ms | 4 |
+| **Medium** | < 300 ms | < 400 ms | < 500 ms | 4 |
+| **Hard** | < 200 ms | < 300 ms | < 400 ms | 4 |
 
-## Web Interface
-
-The ESP32-S3 operates as a **Wi-Fi Access Point**, allowing nearby devices to connect directly to the system without requiring an external router or Internet connection.
-
-Once connected, users can access a local web page displaying game statistics and the best recorded scores.
-
-This functionality is implemented using **ESPAsyncWebServer**.
+The final score may be reduced according to the number of incorrect responses.
 
 ---
 
-## Hardware Cost
+## Local Web Interface
 
-| Component             | Quantity | Approx. Price |
-| --------------------- | :------: | ------------: |
-| ESP32-S3              |     1    |            €6 |
-| OLED 128×64 Display   |     1    |            €7 |
-| Buzzers               |     4    |            €6 |
-| Push Buttons          |    10    |            €9 |
-| IR Sensors            |     6    |            €6 |
-| Double-sided PCB      |     1    |           €15 |
-| Breadboards           |     2    |            €6 |
-| Wooden Base           |     1    |           €25 |
-| Solder                |     1    |            €8 |
-| Soldering Iron        |     1    |            €0 |
-| **Approximate Total** |          |       **€88** |
+The ESP32-S3 operates in **Wi-Fi Access Point mode**, so the system does not require an external router or Internet connection.
+
+A nearby device can connect directly to the ESP32-S3 network and access the embedded web server.
+
+The web interface displays the top three scores for:
+
+- Easy mode
+- Medium mode
+- Hard mode
+
+The HTTP server is implemented using **ESPAsyncWebServer**, while ranking data is stored persistently using **LittleFS**.
 
 ---
 
@@ -181,6 +192,8 @@ This functionality is implemented using **ESPAsyncWebServer**.
 └── README_ES.md
 ```
 
+The firmware is located in `Codi/src/main.cpp`, while `platformio.ini` contains the ESP32-S3 environment and project dependencies.
+
 ---
 
 ## Installation
@@ -192,9 +205,9 @@ git clone https://github.com/marcgraucasado/esp32-reaction-time-trainer.git
 cd esp32-reaction-time-trainer/Codi
 ```
 
-### Build the project
+### Build
 
-The project uses **PlatformIO**.
+The project uses **PlatformIO**:
 
 ```bash
 pio run
@@ -206,40 +219,54 @@ pio run
 pio run -t upload --upload-port /dev/ttyUSB0
 ```
 
-Replace `/dev/ttyUSB0` with the serial port assigned to your ESP32-S3.
+Replace `/dev/ttyUSB0` with the serial port assigned to the ESP32-S3 on your system.
 
 ---
 
-## Skills Developed
+## Main Dependencies
+
+The project uses the following libraries:
+
+```text
+Adafruit GFX Library
+Adafruit SSD1306
+Adafruit BusIO
+ESPAsyncWebServer
+```
+
+They are configured through `platformio.ini` and are automatically handled by PlatformIO.
+
+---
+
+## Skills Demonstrated
 
 This project provided practical experience in:
 
-* Embedded systems development
-* ESP32-S3 programming
-* C++ programming
-* Hardware and software integration
-* Digital input/output management
-* Real-time reaction measurement
-* Sensor integration
-* Wi-Fi networking
-* Local web server development
-* Persistent data storage
-* Electronic assembly and prototyping
-* System testing and debugging
+- Embedded C++ development
+- ESP32-S3 programming
+- Hardware/software integration
+- Digital input and output management
+- IR sensor integration
+- Real-time timing and event detection
+- OLED display control
+- Embedded Wi-Fi networking
+- HTTP server development
+- Persistent storage with LittleFS
+- Electronic prototyping
+- System testing and debugging
 
 ---
 
 ## Academic Context
 
-This project was developed as part of the **Digital Processors** course during the **2025/2026 academic year**.
+This project was developed for the **Digital Processors** course as part of the **Audiovisual Systems Engineering** degree at the **Universitat Politècnica de Catalunya (UPC)**.
 
-It was designed as a complete embedded system combining hardware, firmware, user interaction and network communication.
+The objective was to design and implement a complete embedded system combining physical user interaction, real-time processing, local data storage and network communication.
 
 ---
 
 ## Author
 
-**Marc Grau Casado**
-
-Audiovisual Systems Engineering
+**Marc Grau Casado**  
+Audiovisual Systems Engineering  
 Universitat Politècnica de Catalunya — UPC
