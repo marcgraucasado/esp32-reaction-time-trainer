@@ -13,8 +13,8 @@
 #include <ESPAsyncWebServer.h>
 #include <LittleFS.h>
 
-const char* ssid = "Renatooo";
-const char* password = "1234567AB";
+const char* ssid = "ReactionTrainer";
+const char* password = "reaction123";
 
 AsyncWebServer server(80);
 
