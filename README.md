@@ -188,8 +188,8 @@ This functionality is implemented using **ESPAsyncWebServer**.
 ### Clone the repository
 
 ```bash
-git clone https://github.com/marcgraucasado/PROYECTO.git
-cd PROYECTO
+git clone https://github.com/marcgraucasado/esp32-reaction-time-trainer.git
+cd esp32-reaction-time-trainer/Codi
 ```
 
 ### Build the project
@@ -207,7 +207,6 @@ pio run -t upload --upload-port /dev/ttyUSB0
 ```
 
 Replace `/dev/ttyUSB0` with the serial port assigned to your ESP32-S3.
-
 ---
 
 ## Skills Developed
