@@ -207,6 +207,7 @@ pio run -t upload --upload-port /dev/ttyUSB0
 ```
 
 Replace `/dev/ttyUSB0` with the serial port assigned to your ESP32-S3.
+
 ---
 
 ## Skills Developed
